@@ -1,9 +1,8 @@
 package com.maxicb.intercambio_regalos.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class Usuario {
@@ -14,14 +13,17 @@ public class Usuario {
 
     private String nombreUsuario;
     private String email;
+    @OneToMany(mappedBy = "obsequiador")
+    private List<Regalo> regalos;
 
     public Usuario() {
     }
 
-    public Usuario(Long idUsuario, String nombreUsuario, String email) {
+    public Usuario(Long idUsuario, String nombreUsuario, String email, List<Regalo> regalos) {
         this.idUsuario = idUsuario;
         this.nombreUsuario = nombreUsuario;
         this.email = email;
+        this.regalos = regalos;
     }
 
     public Long getIdUsuario() {
@@ -48,4 +50,11 @@ public class Usuario {
         this.email = email;
     }
 
+    public List<Regalo> getRegalos() {
+        return regalos;
+    }
+
+    public void setRegalos(List<Regalo> regalos) {
+        this.regalos = regalos;
+    }
 }
