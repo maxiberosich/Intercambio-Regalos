@@ -22,10 +22,14 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<DatosUsuarioDTO> registrarUsuario(
+    public ResponseEntity<?> registrarUsuario(
             @RequestBody @Valid CrearUsuarioDTO crearUsuarioDTO){
         DatosUsuarioDTO datosUsuarioDTO = usuarioService.registrarUsuario(crearUsuarioDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(datosUsuarioDTO);
+        if (datosUsuarioDTO != null){
+            return ResponseEntity.status(HttpStatus.CREATED).body(datosUsuarioDTO);
+        }else {
+            return new ResponseEntity<>("El correo eléctronico ya está registrado", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/{idUsuario}")

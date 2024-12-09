@@ -21,7 +21,10 @@ public class RegaloController {
     }
 
     @PostMapping
-    public ResponseEntity<DatosRegaloDTO> cargarRegalo(@RequestBody CrearRegaloDTO crearRegaloDTO){
+    public ResponseEntity<?> cargarRegalo(@RequestBody CrearRegaloDTO crearRegaloDTO) {
+        if (crearRegaloDTO.getIdObsequiador().equals(crearRegaloDTO.getIdDestinatario())) {
+            return new ResponseEntity<>("El obsequiador y el destinatario no pueden ser la misma persona.", HttpStatus.BAD_REQUEST);
+        }
         DatosRegaloDTO datosRegaloDTO = regaloService.asignarRegalo(crearRegaloDTO);
         return new ResponseEntity<>(datosRegaloDTO, HttpStatus.CREATED);
     }

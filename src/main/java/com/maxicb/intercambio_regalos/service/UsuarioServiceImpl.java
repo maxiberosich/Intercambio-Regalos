@@ -24,6 +24,10 @@ public class UsuarioServiceImpl implements UsuarioService{
 
     @Override
     public DatosUsuarioDTO registrarUsuario(CrearUsuarioDTO crearUsuarioDTO){
+        if (usuarioRepository.existsByEmail(crearUsuarioDTO.getEmail())){
+            return null;
+        }
+
         Usuario usuario = modelMapperUtil.convertToEntity(crearUsuarioDTO, Usuario.class);
         usuario = usuarioRepository.save(usuario);
         return modelMapperUtil.convertToDto(usuario, DatosUsuarioDTO.class);
