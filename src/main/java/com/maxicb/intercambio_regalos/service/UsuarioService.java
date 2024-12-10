@@ -3,6 +3,7 @@ package com.maxicb.intercambio_regalos.service;
 import com.maxicb.intercambio_regalos.dto.ActualizarUsuarioDTO;
 import com.maxicb.intercambio_regalos.dto.CrearUsuarioDTO;
 import com.maxicb.intercambio_regalos.dto.DatosUsuarioDTO;
+import com.maxicb.intercambio_regalos.model.Usuario;
 
 import java.util.List;
 

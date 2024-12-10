@@ -10,7 +10,11 @@ import com.maxicb.intercambio_regalos.util.ModelMapperUtil;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 public class RegaloServiceImpl implements RegaloService{
@@ -26,13 +30,11 @@ public class RegaloServiceImpl implements RegaloService{
     }
 
     @Override
-    public DatosRegaloDTO asignarRegalo(CrearRegaloDTO crearRegaloDTO) {
+    public DatosRegaloDTO crearRegalo(CrearRegaloDTO crearRegaloDTO) {
         DatosUsuarioDTO obsequiador = usuarioService.mostrarUsuarioPorId(crearRegaloDTO.getIdObsequiador());
-        DatosUsuarioDTO destinatario = usuarioService.mostrarUsuarioPorId(crearRegaloDTO.getIdDestinatario());
 
         Regalo regalo = new Regalo();
         regalo.setObsequiador(modelMapperUtil.convertToEntity(obsequiador, Usuario.class));
-        regalo.setDestinatario(modelMapperUtil.convertToEntity(destinatario, Usuario.class));
         regalo.setDescripcion(crearRegaloDTO.getDescripcion());
         regalo = regaloRepository.save(regalo);
 
@@ -51,4 +53,30 @@ public class RegaloServiceImpl implements RegaloService{
                 .orElseThrow(() -> new EntityNotFoundException("Asignación no encontrada"));
         return modelMapperUtil.convertToDto(regalo, DatosRegaloDTO.class);
     }
+
+    @Override
+    public DatosRegaloDTO asignarDestinatario(Long idRegalo) {
+        Regalo regalo = regaloRepository.findById(idRegalo)
+                .orElseThrow(() -> new EntityNotFoundException("Regalo no encontrado"));
+
+        if (regalo.getDestinatario() == null){
+            List<DatosUsuarioDTO> participantes = usuarioService.mostrarTodosLosUsuarios()
+                    .stream()
+                    .filter(datosUsuarioDTO -> !datosUsuarioDTO.getIdUsuario().equals(idRegalo))
+                    .collect(Collectors.toList());
+
+            if (participantes.isEmpty()){
+                throw new IllegalStateException("No hay destinatarios disponible");
+            }
+
+            DatosUsuarioDTO usuarioDTO = participantes.get(new Random().nextInt(participantes.size()));
+            regalo.setDestinatario(modelMapperUtil.convertToEntity(usuarioDTO, Usuario.class));
+            regalo = regaloRepository.save(regalo);
+            return modelMapperUtil.convertToDto(regalo, DatosRegaloDTO.class);
+        }else {
+            return null;
+        }
+    }
+
+
 }

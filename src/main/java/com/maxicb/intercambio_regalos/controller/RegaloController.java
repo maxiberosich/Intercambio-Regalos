@@ -6,6 +6,7 @@ import com.maxicb.intercambio_regalos.service.RegaloService;
 import com.maxicb.intercambio_regalos.service.RegaloServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,12 +22,19 @@ public class RegaloController {
     }
 
     @PostMapping
-    public ResponseEntity<?> cargarRegalo(@RequestBody CrearRegaloDTO crearRegaloDTO) {
-        if (crearRegaloDTO.getIdObsequiador().equals(crearRegaloDTO.getIdDestinatario())) {
-            return new ResponseEntity<>("El obsequiador y el destinatario no pueden ser la misma persona.", HttpStatus.BAD_REQUEST);
-        }
-        DatosRegaloDTO datosRegaloDTO = regaloService.asignarRegalo(crearRegaloDTO);
+    public ResponseEntity<DatosRegaloDTO> cargarRegalo(@RequestBody CrearRegaloDTO crearRegaloDTO) {
+        DatosRegaloDTO datosRegaloDTO = regaloService.crearRegalo(crearRegaloDTO);
         return new ResponseEntity<>(datosRegaloDTO, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{idRegalo}/asignar-destinatario")
+    public ResponseEntity<?> asignarDestinatario(@PathVariable Long idRegalo) {
+        DatosRegaloDTO datosRegaloDTO = regaloService.asignarDestinatario(idRegalo);
+        if (datosRegaloDTO != null){
+            return new ResponseEntity<>(datosRegaloDTO, HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>("El regalo ya está asignado", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/obsequiador/{idObsequiador}")
@@ -42,5 +50,6 @@ public class RegaloController {
         DatosRegaloDTO datosRegaloDTO = regaloService.mostrarRegalo(idObsequiador, idDestinatario);
         return new ResponseEntity<>(datosRegaloDTO, HttpStatus.OK);
     }
+
 
 }

@@ -14,7 +14,7 @@ public class Regalo {
     private Usuario obsequiador;
 
     @ManyToOne
-    @JoinColumn(name = "id_destinatario", nullable = false)
+    @JoinColumn(name = "id_destinatario")
     private Usuario destinatario;
     private String descripcion;
 
@@ -25,6 +25,12 @@ public class Regalo {
         this.idRegalo = idRegalo;
         this.obsequiador = obsequiador;
         this.destinatario = destinatario;
+        this.descripcion = descripcion;
+    }
+
+    public Regalo(Long idRegalo, Usuario obsequiador, String descripcion) {
+        this.idRegalo = idRegalo;
+        this.obsequiador = obsequiador;
         this.descripcion = descripcion;
     }
 

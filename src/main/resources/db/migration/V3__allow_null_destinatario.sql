@@ -1,0 +1,1 @@
+ALTER TABLE regalo MODIFY COLUMN id_destinatario BIGINT NULL;
